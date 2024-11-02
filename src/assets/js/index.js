@@ -30,9 +30,7 @@ class Splash {
 
     async startAnimation() {
         let splashes = [
-            { "message": "Hola!", "Creador": "ImNotRuso/Mqrttin" },
-            { "message": "Salut je suis du code.", "author": "Luuxis" },
-            { "message": "Linux n'est pas un os, mais un kernel.", "author": "Luuxis" }
+            { "message": "Bienvenid@ a Hell Trials", "Creador": "ImNotRuso/Mqrttin" },
         ];
         let splash = splashes[Math.floor(Math.random() * splashes.length)];
         this.splashMessage.textContent = splash.message;
@@ -51,14 +49,14 @@ class Splash {
     }
 
     async checkUpdate() {
-        this.setStatus(`Recherche de mise à jour...`);
+        this.setStatus(`Buscando actualizaciones...`);
 
         ipcRenderer.invoke('update-app').then().catch(err => {
-            return this.shutdown(`erreur lors de la recherche de mise à jour :<br>${err.message}`);
+            return this.shutdown(`Error al buscar actualización :<br>${err.message}`);
         });
 
         ipcRenderer.on('updateAvailable', () => {
-            this.setStatus(`Mise à jour disponible !`);
+            this.setStatus(`Hay una actualización disponible!`);
             if (os.platform() == 'win32') {
                 this.toggleProgress();
                 ipcRenderer.send('start-update');
@@ -76,7 +74,7 @@ class Splash {
         })
 
         ipcRenderer.on('update-not-available', () => {
-            console.error("Mise à jour non disponible");
+            console.error("Actualización no disponible");
             this.maintenanceCheck();
         })
     }
@@ -105,10 +103,10 @@ class Splash {
         else if (os == 'linux') latest = this.getLatestReleaseForOS('linux', '.appimage', latestRelease);
 
 
-        this.setStatus(`Mise à jour disponible !<br><div class="download-update">Télécharger</div>`);
+        this.setStatus(`Hay una actualización disponible !<br><div class="download-update">Actualizar</div>`);
         document.querySelector(".download-update").addEventListener("click", () => {
             shell.openExternal(latest.browser_download_url);
-            return this.shutdown("Téléchargement en cours...");
+            return this.shutdown("Actualización en curso...");
         });
     }
 
@@ -119,7 +117,7 @@ class Splash {
             this.startLauncher();
         }).catch(e => {
             console.error(e);
-            return this.shutdown("Aucune connexion internet détectée,<br>veuillez réessayer ultérieurement.");
+            return this.shutdown("No hay conexión a internet,<br>Intentalo más tarde.");
         })
     }
 
