@@ -14,18 +14,25 @@ class Login {
         this.db = new database();
 
         if (typeof this.config.online == 'boolean') {
-            this.config.online ? this.getMicrosoft() : this.getCrack()
+            this.config.online ? this.getMicrosoft() : this.getCrack();
         } else if (typeof this.config.online == 'string') {
             if (this.config.online.match(/^(http|https):\/\/[^ "]+$/)) {
                 this.getAZauth();
             }
         }
         
+        // Event listener para el botón "Cancelar"
         document.querySelector('.cancel-home').addEventListener('click', () => {
-            document.querySelector('.cancel-home').style.display = 'none'
-            changePanel('settings')
-        })
+            document.querySelector('.cancel-home').style.display = 'none';
+            changePanel('settings');
+        });
+
+        // Event listener para el botón "No-Premium"
+        document.querySelector('.connect-button-offline').addEventListener('click', () => {
+            this.getCrack(); // Llama a la función getCrack() para la conexión No-Premium
+        });
     }
+
 
     async getMicrosoft() {
         console.log('Conectando por Microsoft...');
@@ -62,23 +69,33 @@ class Login {
 
     async getCrack() {
         console.log('Conectando de forma No-Premium...');
-        let popupLogin = new popup();
-        let loginOffline = document.querySelector('.login-offline');
-
-        let emailOffline = document.querySelector('.email-offline');
-        let connectOffline = document.querySelector('.connect-offline');
+        let popupLogin = new popup(); // Suponiendo que tienes una clase popup para manejar mensajes
+        let loginOffline = document.querySelector('.login-offline'); // Contenedor del formulario de inicio de sesión
+        let loginHome = document.querySelector('.login-home'); // Contenedor del menú de selección
+    
+        let emailOffline = document.querySelector('.email-offline'); // Campo de entrada para el nombre de usuario
+        let connectOffline = document.querySelector('.connect-offline'); // Botón "Acceder"
+        let cancelOffline = document.querySelector('.cancel-offline'); // Botón "Cancelar"
+    
+        // Oculta el menú de selección
+        loginHome.style.display = 'none';
+    
+        // Mostrar el formulario de inicio de sesión
         loginOffline.style.display = 'block';
-
+    
+        // Evento para el botón "Acceder"
         connectOffline.addEventListener('click', async () => {
+            // Validar la longitud del nombre de usuario
             if (emailOffline.value.length < 3) {
                 popupLogin.openPopup({
                     title: 'Error',
-                    content: 'Tu nick debe ser de almenos 3 carácteres.',
+                    content: 'Tu nick debe ser de al menos 3 caracteres.',
                     options: true
                 });
                 return;
             }
-
+    
+            // Validar que el nombre de usuario no contenga espacios
             if (emailOffline.value.match(/ /g)) {
                 popupLogin.openPopup({
                     title: 'Error',
@@ -87,9 +104,11 @@ class Login {
                 });
                 return;
             }
-
+    
+            // Intentar iniciar sesión con Mojang
             let MojangConnect = await Mojang.login(emailOffline.value);
-
+    
+            // Manejar errores de conexión
             if (MojangConnect.error) {
                 popupLogin.openPopup({
                     title: 'Error',
@@ -98,11 +117,89 @@ class Login {
                 });
                 return;
             }
-            await this.saveData(MojangConnect)
-            popupLogin.closePopup();
+    
+            // Guardar datos de usuario si la conexión es exitosa
+            await this.saveData(MojangConnect);
+            popupLogin.closePopup(); // Cerrar el popup si está abierto
+            loginOffline.style.display = 'none'; // Cerrar la ventana de inicio de sesión
+            loginHome.style.display = 'block'; // Mostrar de nuevo el menú si es necesario
+        });
+    
+        // Evento para el botón "Cancelar"
+        cancelOffline.addEventListener('click', () => {
+            loginOffline.style.display = 'none'; // Ocultar el formulario de inicio de sesión
+            loginHome.style.display = 'block'; // Volver a mostrar el menú
+            popupLogin.closePopup(); // Si estás usando un popup para mostrar mensajes
         });
     }
-
+    async getCrack() {
+        console.log('Conectando de forma No-Premium...');
+        let popupLogin = new popup(); // Suponiendo que tienes una clase popup para manejar mensajes
+        let loginOffline = document.querySelector('.login-offline'); // Contenedor del formulario de inicio de sesión
+        let loginHome = document.querySelector('.login-home'); // Contenedor del menú de selección
+    
+        let emailOffline = document.querySelector('.email-offline'); // Campo de entrada para el nombre de usuario
+        let connectOffline = document.querySelector('.connect-offline'); // Botón "Acceder"
+        let cancelOffline = document.querySelector('.cancel-offline'); // Botón "Cancelar"
+    
+        // Oculta el menú de selección
+        loginHome.style.display = 'none';
+    
+        // Mostrar el formulario de inicio de sesión
+        loginOffline.style.display = 'block';
+    
+        // Evento para el botón "Acceder"
+        connectOffline.addEventListener('click', async () => {
+            // Validar la longitud del nombre de usuario
+            if (emailOffline.value.length < 3) {
+                popupLogin.openPopup({
+                    title: 'Error',
+                    content: 'Tu nick debe ser de al menos 3 caracteres.',
+                    options: true
+                });
+                return;
+            }
+    
+            // Validar que el nombre de usuario no contenga espacios
+            if (emailOffline.value.match(/ /g)) {
+                popupLogin.openPopup({
+                    title: 'Error',
+                    content: 'Tu nick no debe contener espacios.',
+                    options: true
+                });
+                return;
+            }
+    
+            // Intentar iniciar sesión con Mojang
+            let MojangConnect = await Mojang.login(emailOffline.value);
+    
+            // Manejar errores de conexión
+            if (MojangConnect.error) {
+                popupLogin.openPopup({
+                    title: 'Error',
+                    content: MojangConnect.message,
+                    options: true
+                });
+                return;
+            }
+    
+            // Guardar datos de usuario si la conexión es exitosa
+            await this.saveData(MojangConnect);
+            popupLogin.closePopup(); // Cerrar el popup si está abierto
+            loginOffline.style.display = 'none'; // Cerrar la ventana de inicio de sesión
+            loginHome.style.display = 'block'; // Mostrar de nuevo el menú si es necesario
+        });
+    
+        // Evento para el botón "Cancelar"
+        cancelOffline.addEventListener('click', () => {
+            loginOffline.style.display = 'none'; // Ocultar el formulario de inicio de sesión
+            loginHome.style.display = 'block'; // Volver a mostrar el menú
+            popupLogin.closePopup(); // Si estás usando un popup para mostrar mensajes
+        });
+    }
+        
+    
+    
     async getAZauth() {
         console.log('Conectando por AZauth...');
         let AZauthClient = new AZauth(this.config.online);
