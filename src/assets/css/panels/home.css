@@ -277,18 +277,19 @@
   }
   
   .player-head {
-    background: url("../../images/default/setve.png"), no-repeat;
+    background: url("../../images/default/setve.png") no-repeat;
     background-size: cover;
     image-rendering: pixelated;
     transition: var(--transition);
-    height: 3rem;
-    width: 3rem;
+    height: 4rem; /* Tamaño aumentado */
+    width: 4rem;  /* Tamaño aumentado */
     pointer-events: none;
     border-radius: 15px;
     justify-content: left;
     align-items: left;
     margin-left: 0;
-  }
+    transform: translateY(-10px); /* Mover hacia arriba */
+}
   
   .player-menu {
     color: var(--element-color);

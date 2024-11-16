@@ -24,27 +24,40 @@ class Settings {
         document.querySelector('.nav-box').addEventListener('click', e => {
             if (e.target.classList.contains('nav-settings-btn')) {
                 let id = e.target.id
-
+    
                 let activeSettingsBTN = document.querySelector('.active-settings-BTN')
                 let activeContainerSettings = document.querySelector('.active-container-settings')
-
+    
+                // Si el botón es para "Guardar"
                 if (id == 'save') {
                     if (activeSettingsBTN) activeSettingsBTN.classList.toggle('active-settings-BTN');
                     document.querySelector('#account').classList.add('active-settings-BTN');
-
+    
                     if (activeContainerSettings) activeContainerSettings.classList.toggle('active-container-settings');
                     document.querySelector(`#account-tab`).classList.add('active-container-settings');
                     return changePanel('home')
                 }
-
+    
+                // Si el botón es para "Créditos"
+                if (id == 'credits') {
+                    if (activeSettingsBTN) activeSettingsBTN.classList.toggle('active-settings-BTN');
+                    e.target.classList.add('active-settings-BTN');
+    
+                    if (activeContainerSettings) activeContainerSettings.classList.toggle('active-container-settings');
+                    document.querySelector(`#${id}-tab`).classList.add('active-container-settings');
+                    return;
+                }
+    
+                // Para otros botones
                 if (activeSettingsBTN) activeSettingsBTN.classList.toggle('active-settings-BTN');
                 e.target.classList.add('active-settings-BTN');
-
+    
                 if (activeContainerSettings) activeContainerSettings.classList.toggle('active-container-settings');
                 document.querySelector(`#${id}-tab`).classList.add('active-container-settings');
             }
         })
     }
+    
 
     accounts() {
         document.querySelector('.accounts-list').addEventListener('click', async e => {
